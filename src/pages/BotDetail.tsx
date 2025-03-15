@@ -1,10 +1,12 @@
-
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 import { 
   BarChart, 
   ShieldCheck, 
@@ -12,14 +14,17 @@ import {
   CheckCircle,
   ArrowRight, 
   HelpCircle, 
-  TrendingUp 
+  TrendingUp,
+  ShoppingCart 
 } from "lucide-react";
 
 const BotDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("features");
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  // This would typically come from an API call based on the id
   const bots = [
     {
       id: 1,
@@ -215,6 +220,54 @@ const BotDetail = () => {
 
   const relatedBotDetails = bot.relatedBots.map(relatedId => bots.find(b => b.id === relatedId)).filter(Boolean);
 
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to add items to your cart.",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    addToCart({
+      id: bot.id.toString(),
+      name: bot.name,
+      description: bot.fullDescription.substring(0, 100) + "...",
+      price: bot.price,
+      imageUrl: bot.image,
+    });
+
+    toast({
+      title: "Added to Cart",
+      description: `${bot.name} has been added to your cart.`,
+      variant: "default",
+    });
+  };
+
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to purchase.",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    addToCart({
+      id: bot.id.toString(),
+      name: bot.name,
+      description: bot.fullDescription.substring(0, 100) + "...",
+      price: bot.price,
+      imageUrl: bot.image,
+    });
+
+    navigate("/dashboard/checkout");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -269,10 +322,18 @@ const BotDetail = () => {
               <div className="border-t border-white/10 pt-6">
                 <div className="text-3xl font-bold text-white mb-4">KES {bot.price.toLocaleString()}</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
-                    Purchase Now
+                  <Button 
+                    className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
+                    onClick={handleBuyNow}
+                  >
+                    Buy Now
                   </Button>
-                  <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-white border-white/20 hover:bg-white/10"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-2" />
                     Add to Cart
                   </Button>
                 </div>

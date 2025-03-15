@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import {
   LayoutDashboard,
   Download,
@@ -11,11 +12,14 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  ShoppingCart
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const DashboardNav = () => {
   const { logout, user } = useAuth();
+  const { itemCount } = useCart();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -81,6 +85,21 @@ const DashboardNav = () => {
             Welcome, <span className="font-medium text-white">{user?.name}</span>
           </p>
           
+          <Link to="/dashboard/cart" className="mr-4 relative">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="text-white/80 hover:text-white hover:bg-white/10"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {itemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-[#F2FF44] text-black hover:bg-[#F2FF44] px-1.5 min-w-5 h-5 flex items-center justify-center">
+                  {itemCount}
+                </Badge>
+              )}
+            </Button>
+          </Link>
+          
           <Button 
             variant="outline" 
             className="hidden md:flex text-white border-white/20 hover:bg-white/10"
@@ -119,6 +138,19 @@ const DashboardNav = () => {
                 </Button>
               </Link>
             ))}
+            <Link to="/dashboard/cart" onClick={() => setIsMenuOpen(false)}>
+              <Button
+                variant={location.pathname === "/dashboard/cart" ? "default" : "ghost"}
+                className={`w-full justify-start mb-2 ${
+                  location.pathname === "/dashboard/cart"
+                    ? "bg-[#F2FF44] text-black hover:bg-[#E2EF34]" 
+                    : "text-white/80 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Cart {itemCount > 0 && `(${itemCount})`}
+              </Button>
+            </Link>
             <Button 
               variant="outline" 
               className="w-full justify-start text-white border-white/20 hover:bg-white/10 mt-2"

@@ -7,6 +7,8 @@ import DashboardDownloads from "@/components/dashboard/DashboardDownloads";
 import DashboardPurchaseHistory from "@/components/dashboard/DashboardPurchaseHistory";
 import DashboardSupportTickets from "@/components/dashboard/DashboardSupportTickets";
 import DashboardSettings from "@/components/dashboard/DashboardSettings";
+import DashboardCart from "@/components/dashboard/DashboardCart";
+import DashboardCheckout from "@/components/dashboard/DashboardCheckout";
 import Footer from "@/components/Footer";
 
 const Dashboard = () => {
@@ -34,13 +36,18 @@ const Dashboard = () => {
       <DashboardNav />
       
       <div className="pt-24 pb-20">
-        <Routes>
-          <Route path="/" element={<DashboardOverview />} />
-          <Route path="/downloads" element={<DashboardDownloads />} />
-          <Route path="/purchase-history" element={<DashboardPurchaseHistory />} />
-          <Route path="/support-tickets" element={<DashboardSupportTickets />} />
-          <Route path="/settings" element={<DashboardSettings />} />
-        </Routes>
+        <div className="max-w-7xl mx-auto relative px-4">
+          <div className="absolute inset-0 bg-accent/5 backdrop-blur-3xl -z-10"></div>
+          <Routes>
+            <Route path="/" element={<DashboardOverview />} />
+            <Route path="/downloads" element={<DashboardDownloads />} />
+            <Route path="/purchase-history" element={<DashboardPurchaseHistory />} />
+            <Route path="/support-tickets" element={<DashboardSupportTickets />} />
+            <Route path="/settings" element={<DashboardSettings />} />
+            <Route path="/cart" element={<DashboardCart />} />
+            <Route path="/checkout" element={<DashboardCheckout />} />
+          </Routes>
+        </div>
       </div>
       
       <Footer />
