@@ -1,11 +1,13 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/context/AuthContext";
+import { RegisterFormValues } from "@/types/auth";
 import {
   Form,
   FormControl,
@@ -15,86 +17,56 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Check } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { UserPlus } from "lucide-react";
 
-// Form schema
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters" }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
-});
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  confirmPassword: z.string(),
+}).refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  }
+);
 
-// Form type
-type SupportFormValues = z.infer<typeof formSchema>;
-
-const Support = () => {
+const Register = () => {
+  const { register } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
 
-  const form = useForm<SupportFormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
-      subject: "",
-      message: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (values: SupportFormValues) => {
+  const onSubmit = async (values: RegisterFormValues) => {
     setIsSubmitting(true);
-    console.log(values);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await register(values.name, values.email, values.password);
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      form.reset();
-      toast.success("Your message has been sent successfully!");
-      
-      // Reset success status after 3 seconds
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 3000);
-    }, 1500);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="container max-w-4xl mx-auto py-24 px-4 md:px-6">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Get Support</h1>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto">
-            Have questions or need assistance? Our support team is here to help. Fill out the form below and we'll get back to you as soon as possible.
+      <div className="container max-w-md mx-auto py-24 px-4 md:px-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Create an Account</h1>
+          <p className="text-muted-foreground">
+            Join Vertex Bots and start trading smarter
           </p>
         </div>
-
-        {isSuccess && (
-          <Alert className="mb-6 border-green-500 bg-green-500/10">
-            <Check className="h-4 w-4 text-green-500" />
-            <AlertTitle>Success!</AlertTitle>
-            <AlertDescription>
-              Your message has been sent successfully. We'll get back to you soon.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {isError && (
-          <Alert className="mb-6" variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              There was a problem sending your message. Please try again.
-            </AlertDescription>
-          </Alert>
-        )}
         
         <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6 md:p-8">
           <Form {...form}>
@@ -104,9 +76,9 @@ const Support = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your name" {...field} />
+                      <Input placeholder="Your full name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,12 +101,16 @@ const Support = () => {
               
               <FormField
                 control={form.control}
-                name="subject"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Subject</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Subject of your inquiry" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="Create a password" 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -143,14 +119,14 @@ const Support = () => {
               
               <FormField
                 control={form.control}
-                name="message"
+                name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message</FormLabel>
+                    <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Describe your issue or question in detail" 
-                        className="min-h-[150px]"
+                      <Input 
+                        type="password" 
+                        placeholder="Confirm your password" 
                         {...field} 
                       />
                     </FormControl>
@@ -164,10 +140,24 @@ const Support = () => {
                 className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? "Creating account..." : (
+                  <>
+                    Create Account
+                    <UserPlus className="w-4 h-4 ml-2" />
+                  </>
+                )}
               </Button>
             </form>
           </Form>
+          
+          <div className="mt-6 text-center text-sm">
+            <p className="text-muted-foreground">
+              Already have an account?{" "}
+              <Link to="/login" className="text-[#F2FF44] hover:underline">
+                Login here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
       
@@ -176,4 +166,4 @@ const Support = () => {
   );
 };
 
-export default Support;
+export default Register;

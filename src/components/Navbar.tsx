@@ -1,11 +1,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LogIn, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { LogIn, Menu, User, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,13 +34,31 @@ const Navbar = () => {
           <Link to="/how-it-works" className="text-white/80 hover:text-white transition-colors">How It Works</Link>
           <Link to="/faq" className="text-white/80 hover:text-white transition-colors">FAQ</Link>
           <Link to="/support" className="text-white/80 hover:text-white transition-colors">Support</Link>
-          <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
-            Register
-          </Button>
-          <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
-            Login
-            <LogIn className="w-4 h-4 ml-2" />
-          </Button>
+          
+          {isAuthenticated ? (
+            <Button 
+              variant="outline" 
+              className="text-white border-white/20 hover:bg-white/10"
+              onClick={() => navigate("/dashboard")}
+            >
+              <User className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+          ) : (
+            <>
+              <Link to="/register">
+                <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                  Register
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+                  Login
+                  <LogIn className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
         
         {/* Mobile Navigation */}
@@ -49,13 +70,39 @@ const Navbar = () => {
               <Link to="/how-it-works" className="text-white/80 hover:text-white transition-colors py-2">How It Works</Link>
               <Link to="/faq" className="text-white/80 hover:text-white transition-colors py-2">FAQ</Link>
               <Link to="/support" className="text-white/80 hover:text-white transition-colors py-2">Support</Link>
-              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 w-full">
-                Register
-              </Button>
-              <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34] w-full">
-                Login
-                <LogIn className="w-4 h-4 ml-2" />
-              </Button>
+              
+              {isAuthenticated ? (
+                <Button 
+                  variant="outline" 
+                  className="text-white border-white/20 hover:bg-white/10 w-full justify-center"
+                  onClick={() => {
+                    navigate("/dashboard");
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                    <Button 
+                      variant="outline" 
+                      className="text-white border-white/20 hover:bg-white/10 w-full"
+                    >
+                      Register
+                    </Button>
+                  </Link>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                    <Button 
+                      className="bg-[#F2FF44] text-black hover:bg-[#E2EF34] w-full"
+                    >
+                      Login
+                      <LogIn className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
