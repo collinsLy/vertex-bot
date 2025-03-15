@@ -56,10 +56,10 @@ const DashboardNav = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background/80 backdrop-blur-lg border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[#FAFAF8]/80 backdrop-blur-lg border-b border-[#E6E4DD]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="text-2xl font-bold text-white mr-8">Vertex Bots</Link>
+          <Link to="/" className="text-2xl font-bold text-[#141413] mr-8">Vertex Bots</Link>
           
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-1">
@@ -68,8 +68,8 @@ const DashboardNav = () => {
                 <Button
                   variant={location.pathname === item.path ? "default" : "ghost"}
                   className={location.pathname === item.path 
-                    ? "bg-[#F2FF44] text-black hover:bg-[#E2EF34]" 
-                    : "text-white/80 hover:text-white hover:bg-white/10"}
+                    ? "bg-[#F2FF44] text-[#141413] hover:bg-[#C7FB76]" 
+                    : "text-[#605F5B] hover:text-[#141413] hover:bg-[#F0EFEA]"}
                   size="sm"
                 >
                   {item.icon}
@@ -81,19 +81,19 @@ const DashboardNav = () => {
         </div>
         
         <div className="flex items-center">
-          <p className="mr-4 hidden md:block text-white/70">
-            Welcome, <span className="font-medium text-white">{user?.name}</span>
+          <p className="mr-4 hidden md:block text-[#605F5B]">
+            Welcome, <span className="font-medium text-[#141413]">{user?.name}</span>
           </p>
           
           <Link to="/dashboard/cart" className="mr-4 relative">
             <Button 
               variant="ghost" 
               size="icon"
-              className="text-white/80 hover:text-white hover:bg-white/10"
+              className="text-[#605F5B] hover:text-[#141413] hover:bg-[#F0EFEA]"
             >
               <ShoppingCart className="w-5 h-5" />
               {itemCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-[#F2FF44] text-black hover:bg-[#F2FF44] px-1.5 min-w-5 h-5 flex items-center justify-center">
+                <Badge className="absolute -top-2 -right-2 bg-[#F2FF44] text-[#141413] hover:bg-[#F2FF44] px-1.5 min-w-5 h-5 flex items-center justify-center">
                   {itemCount}
                 </Badge>
               )}
@@ -102,7 +102,7 @@ const DashboardNav = () => {
           
           <Button 
             variant="outline" 
-            className="hidden md:flex text-white border-white/20 hover:bg-white/10"
+            className="hidden md:flex text-[#141413] border-[#E6E4DD] hover:bg-[#F0EFEA]"
             onClick={logout}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -111,7 +111,7 @@ const DashboardNav = () => {
           
           {/* Mobile menu button */}
           <button 
-            className="md:hidden text-white focus:outline-none"
+            className="md:hidden text-[#141413] focus:outline-none"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -121,16 +121,16 @@ const DashboardNav = () => {
       
       {/* Mobile navigation */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg">
-          <div className="flex flex-col p-4 border-t border-white/10">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[#FAFAF8]/95 backdrop-blur-lg">
+          <div className="flex flex-col p-4 border-t border-[#E6E4DD]">
             {navItems.map((item) => (
               <Link to={item.path} key={item.path} onClick={() => setIsMenuOpen(false)}>
                 <Button
                   variant={location.pathname === item.path ? "default" : "ghost"}
                   className={`w-full justify-start mb-2 ${
                     location.pathname === item.path 
-                      ? "bg-[#F2FF44] text-black hover:bg-[#E2EF34]" 
-                      : "text-white/80 hover:text-white hover:bg-white/10"
+                      ? "bg-[#F2FF44] text-[#141413] hover:bg-[#C7FB76]" 
+                      : "text-[#605F5B] hover:text-[#141413] hover:bg-[#F0EFEA]"
                   }`}
                 >
                   {item.icon}
@@ -143,8 +143,8 @@ const DashboardNav = () => {
                 variant={location.pathname === "/dashboard/cart" ? "default" : "ghost"}
                 className={`w-full justify-start mb-2 ${
                   location.pathname === "/dashboard/cart"
-                    ? "bg-[#F2FF44] text-black hover:bg-[#E2EF34]" 
-                    : "text-white/80 hover:text-white hover:bg-white/10"
+                    ? "bg-[#F2FF44] text-[#141413] hover:bg-[#C7FB76]" 
+                    : "text-[#605F5B] hover:text-[#141413] hover:bg-[#F0EFEA]"
                 }`}
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
@@ -153,7 +153,7 @@ const DashboardNav = () => {
             </Link>
             <Button 
               variant="outline" 
-              className="w-full justify-start text-white border-white/20 hover:bg-white/10 mt-2"
+              className="w-full justify-start text-[#141413] border-[#E6E4DD] hover:bg-[#F0EFEA] mt-2"
               onClick={logout}
             >
               <LogOut className="w-5 h-5 mr-2" />

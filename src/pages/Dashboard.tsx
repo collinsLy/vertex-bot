@@ -17,10 +17,10 @@ const Dashboard = () => {
   // If authentication is still loading, show loading indicator
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF8]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F2FF44] mx-auto"></div>
-          <p className="mt-4 text-white/70">Loading...</p>
+          <p className="mt-4 text-[#605F5B]">Loading...</p>
         </div>
       </div>
     );
@@ -32,12 +32,12 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FAFAF8]">
       <DashboardNav />
       
       <div className="pt-24 pb-20">
         <div className="max-w-7xl mx-auto relative px-4">
-          <div className="absolute inset-0 bg-accent/5 backdrop-blur-3xl -z-10"></div>
+          <div className="absolute inset-0 bg-[#8989DE]/5 backdrop-blur-3xl -z-10"></div>
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
             <Route path="/downloads" element={<DashboardDownloads />} />
