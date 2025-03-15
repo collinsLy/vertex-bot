@@ -2,8 +2,9 @@
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockPurchasedBots, mockSupportTickets, formatDate, formatCurrency } from "@/lib/mock-data";
-import { Download, TicketCheck, History, Bot } from "lucide-react";
+import { Download, TicketCheck, History, Bot, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const DashboardOverview = () => {
   const { user } = useAuth();
@@ -88,18 +89,28 @@ const DashboardOverview = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-white/70">No purchases yet.</p>
+              <div className="text-center py-6">
+                <ShoppingBag className="w-12 h-12 text-white/30 mx-auto mb-3" />
+                <p className="text-white/70 mb-4">You haven't purchased any bots yet.</p>
+                <Link to="/bots">
+                  <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+                    Explore Our Bots
+                  </Button>
+                </Link>
+              </div>
             )}
             
-            <div className="mt-4">
-              <Link 
-                to="/dashboard/downloads" 
-                className="text-sm text-[#F2FF44] hover:underline flex items-center"
-              >
-                View all downloads
-                <Download className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
+            {recentPurchases.length > 0 && (
+              <div className="mt-4">
+                <Link 
+                  to="/dashboard/downloads" 
+                  className="text-sm text-[#F2FF44] hover:underline flex items-center"
+                >
+                  View all downloads
+                  <Download className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
         
@@ -134,18 +145,28 @@ const DashboardOverview = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-white/70">No support tickets yet.</p>
+              <div className="text-center py-6">
+                <TicketCheck className="w-12 h-12 text-white/30 mx-auto mb-3" />
+                <p className="text-white/70 mb-4">No support tickets yet.</p>
+                <Link to="/dashboard/support-tickets">
+                  <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+                    Create Support Ticket
+                  </Button>
+                </Link>
+              </div>
             )}
             
-            <div className="mt-4">
-              <Link 
-                to="/dashboard/support-tickets" 
-                className="text-sm text-[#F2FF44] hover:underline flex items-center"
-              >
-                View all tickets
-                <TicketCheck className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
+            {recentTickets.length > 0 && (
+              <div className="mt-4">
+                <Link 
+                  to="/dashboard/support-tickets" 
+                  className="text-sm text-[#F2FF44] hover:underline flex items-center"
+                >
+                  View all tickets
+                  <TicketCheck className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

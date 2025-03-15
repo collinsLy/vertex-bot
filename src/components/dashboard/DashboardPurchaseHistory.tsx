@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { mockPurchasedBots, formatDate, formatCurrency } from "@/lib/mock-data";
-import { Download, FileText, Receipt } from "lucide-react";
+import { Download, FileText, Receipt, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const DashboardPurchaseHistory = () => {
   const handleDownloadReceipt = (botName: string) => {
@@ -63,7 +64,15 @@ const DashboardPurchaseHistory = () => {
               </Table>
             </div>
           ) : (
-            <p className="text-white/70">No purchase history available.</p>
+            <div className="text-center py-8">
+              <ShoppingBag className="w-16 h-16 text-white/30 mx-auto mb-4" />
+              <p className="text-white/70 text-lg mb-6">You haven't made any purchases yet.</p>
+              <Link to="/bots">
+                <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+                  Explore Our Bots
+                </Button>
+              </Link>
+            </div>
           )}
         </CardContent>
       </Card>

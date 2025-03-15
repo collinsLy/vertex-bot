@@ -7,6 +7,7 @@ import { Download, Info } from "lucide-react";
 import { mockPurchasedBots, formatDate } from "@/lib/mock-data";
 import { PurchasedBot } from "@/types/auth";
 import { toast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 
 const DashboardDownloads = () => {
   const location = useLocation();
@@ -68,7 +69,7 @@ const DashboardDownloads = () => {
               You haven't purchased any trading bots yet. Visit our marketplace to browse available bots.
             </p>
             <Button asChild className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
-              <a href="/bots">Browse Marketplace</a>
+              <Link to="/bots">Browse Marketplace</Link>
             </Button>
           </CardContent>
         </Card>
@@ -116,18 +117,20 @@ const DashboardDownloads = () => {
         </div>
       )}
       
-      <div className="mt-8 p-6 bg-white/5 rounded-xl backdrop-blur-sm">
-        <h3 className="text-white text-lg font-medium mb-4">Setup Instructions</h3>
-        <ol className="list-decimal pl-5 space-y-3 text-white/70">
-          <li>Download your purchased bot using the download button.</li>
-          <li>Extract the ZIP file to a location of your choice.</li>
-          <li>Open your MetaTrader platform (MT4 or MT5 as required by the bot).</li>
-          <li>Import the .ex4 or .ex5 file to your platform's experts folder.</li>
-          <li>During setup, enter your license key when prompted.</li>
-          <li>Configure the bot settings according to your trading preferences.</li>
-          <li>For detailed setup instructions, refer to the PDF manual included in the download.</li>
-        </ol>
-      </div>
+      {bots.length > 0 && (
+        <div className="mt-8 p-6 bg-white/5 rounded-xl backdrop-blur-sm">
+          <h3 className="text-white text-lg font-medium mb-4">Setup Instructions</h3>
+          <ol className="list-decimal pl-5 space-y-3 text-white/70">
+            <li>Download your purchased bot using the download button.</li>
+            <li>Extract the ZIP file to a location of your choice.</li>
+            <li>Open your MetaTrader platform (MT4 or MT5 as required by the bot).</li>
+            <li>Import the .ex4 or .ex5 file to your platform's experts folder.</li>
+            <li>During setup, enter your license key when prompted.</li>
+            <li>Configure the bot settings according to your trading preferences.</li>
+            <li>For detailed setup instructions, refer to the PDF manual included in the download.</li>
+          </ol>
+        </div>
+      )}
     </div>
   );
 };
