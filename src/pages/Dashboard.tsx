@@ -17,10 +17,10 @@ const Dashboard = () => {
   // If authentication is still loading, show loading indicator
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF8]">
+      <div className="min-h-screen flex items-center justify-center bg-[#141413]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F2FF44] mx-auto"></div>
-          <p className="mt-4 text-[#605F5B]">Loading...</p>
+          <p className="mt-4 text-white">Loading...</p>
         </div>
       </div>
     );
@@ -32,7 +32,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-[#141413]">
       <DashboardNav />
       
       <div className="pt-24 pb-20">

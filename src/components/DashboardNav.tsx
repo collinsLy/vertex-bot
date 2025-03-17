@@ -81,8 +81,8 @@ const DashboardNav = () => {
         </div>
         
         <div className="flex items-center">
-          <p className="mr-4 hidden md:block text-[#605F5B]">
-            Welcome, <span className="font-medium text-[#141413]">{user?.name}</span>
+          <p className="mr-4 hidden md:block text-white">
+            Welcome, <span className="font-medium text-white">{user?.name}</span>
           </p>
           
           <Link to="/dashboard/cart" className="mr-4 relative">
@@ -102,7 +102,7 @@ const DashboardNav = () => {
           
           <Button 
             variant="outline" 
-            className="hidden md:flex text-[#141413] border-[#E6E4DD] hover:bg-[#F0EFEA]"
+            className="hidden md:flex text-white border-[#E6E4DD] hover:bg-[#F0EFEA] hover:text-[#141413]"
             onClick={logout}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -111,7 +111,7 @@ const DashboardNav = () => {
           
           {/* Mobile menu button */}
           <button 
-            className="md:hidden text-[#141413] focus:outline-none"
+            className="md:hidden text-white focus:outline-none"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -153,7 +153,7 @@ const DashboardNav = () => {
             </Link>
             <Button 
               variant="outline" 
-              className="w-full justify-start text-[#141413] border-[#E6E4DD] hover:bg-[#F0EFEA] mt-2"
+              className="w-full justify-start text-white border-[#E6E4DD] hover:bg-[#F0EFEA] hover:text-[#141413] mt-2"
               onClick={logout}
             >
               <LogOut className="w-5 h-5 mr-2" />
