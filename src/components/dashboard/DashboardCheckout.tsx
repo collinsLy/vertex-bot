@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
@@ -12,6 +11,8 @@ import { formatCurrency } from "@/lib/mock-data";
 import { CheckCircle, CreditCard, Smartphone, Bitcoin } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 
+const PAYMENT_GATEWAY_URL = "https://121bc70e-c053-463f-b2e4-d866e4703b4b-00-t1pwtshj20ol.riker.replit.dev/";
+
 const DashboardCheckout = () => {
   const { items, getTotal, clearCart } = useCart();
   const navigate = useNavigate();
@@ -22,26 +23,46 @@ const DashboardCheckout = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      // Success scenario
-      toast({
-        title: "Payment successful!",
-        description: "Your order has been processed successfully.",
-        variant: "default",
-      });
-
-      // Clear cart and redirect to downloads
-      clearCart();
-      navigate("/dashboard/downloads", { 
-        state: { 
-          checkoutComplete: true,
-          purchasedItems: items
-        } 
-      });
+    if (paymentMethod === "mpesa" || paymentMethod === "card") {
+      // Redirect to the payment gateway for mpesa and card options
+      const redirectToPayment = () => {
+        const orderData = {
+          items: items,
+          total: getTotal(),
+          method: paymentMethod
+        };
+        
+        // Store order details in sessionStorage for post-payment processing
+        sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+        
+        // Redirect to payment gateway
+        window.location.href = PAYMENT_GATEWAY_URL;
+      };
       
-      setIsSubmitting(false);
-    }, 1500);
+      // Small delay to show processing state
+      setTimeout(redirectToPayment, 500);
+    } else {
+      // For crypto payments, keep the existing flow
+      setTimeout(() => {
+        // Success scenario
+        toast({
+          title: "Payment successful!",
+          description: "Your order has been processed successfully.",
+          variant: "default",
+        });
+
+        // Clear cart and redirect to downloads
+        clearCart();
+        navigate("/dashboard/downloads", { 
+          state: { 
+            checkoutComplete: true,
+            purchasedItems: items
+          } 
+        });
+        
+        setIsSubmitting(false);
+      }, 1500);
+    }
   };
 
   if (items.length === 0) {
@@ -103,62 +124,23 @@ const DashboardCheckout = () => {
                 </h3>
                 
                 {paymentMethod === "mpesa" && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <Label htmlFor="phone" className="text-white mb-2 block">Phone Number</Label>
-                        <Input 
-                          id="phone" 
-                          placeholder="e.g., 254712345678" 
-                          required
-                          className="bg-white/5 border-white/10 text-white" 
-                        />
-                      </div>
+                  <div className="text-white">
+                    <p className="mb-4">You'll be redirected to our secure payment gateway to complete your M-Pesa payment.</p>
+                    <div className="bg-white/10 p-4 rounded-md">
+                      <p className="text-sm mb-2">• Enter your phone number on the payment page</p>
+                      <p className="text-sm mb-2">• Confirm the payment details</p>
+                      <p className="text-sm">• Complete the transaction by entering your M-Pesa PIN</p>
                     </div>
                   </div>
                 )}
                 
                 {paymentMethod === "card" && (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="cardNumber" className="text-white mb-2 block">Card Number</Label>
-                      <Input 
-                        id="cardNumber" 
-                        placeholder="1234 5678 9012 3456" 
-                        required
-                        className="bg-white/5 border-white/10 text-white" 
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="expiry" className="text-white mb-2 block">Expiry Date</Label>
-                        <Input 
-                          id="expiry" 
-                          placeholder="MM/YY" 
-                          required
-                          className="bg-white/5 border-white/10 text-white" 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="cvv" className="text-white mb-2 block">CVV</Label>
-                        <Input 
-                          id="cvv" 
-                          placeholder="123" 
-                          required
-                          className="bg-white/5 border-white/10 text-white" 
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="nameOnCard" className="text-white mb-2 block">Name on Card</Label>
-                      <Input 
-                        id="nameOnCard" 
-                        placeholder="John Doe" 
-                        required
-                        className="bg-white/5 border-white/10 text-white" 
-                      />
+                  <div className="text-white">
+                    <p className="mb-4">You'll be redirected to our secure payment gateway to complete your card payment.</p>
+                    <div className="bg-white/10 p-4 rounded-md">
+                      <p className="text-sm mb-2">• All major cards accepted (Visa, Mastercard, American Express)</p>
+                      <p className="text-sm mb-2">• Your card details are securely processed</p>
+                      <p className="text-sm">• You'll receive a receipt once the payment is complete</p>
                     </div>
                   </div>
                 )}
@@ -196,10 +178,10 @@ const DashboardCheckout = () => {
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
-                  Processing...
+                  {paymentMethod === "mpesa" || paymentMethod === "card" ? "Redirecting..." : "Processing..."}
                 </>
               ) : (
-                <>Confirm Payment</>
+                <>Proceed to Payment</>
               )}
             </Button>
           </form>

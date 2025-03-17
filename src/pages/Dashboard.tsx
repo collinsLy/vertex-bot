@@ -1,6 +1,8 @@
 
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import DashboardNav from "@/components/DashboardNav";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
 import DashboardDownloads from "@/components/dashboard/DashboardDownloads";
@@ -10,9 +12,52 @@ import DashboardSettings from "@/components/dashboard/DashboardSettings";
 import DashboardCart from "@/components/dashboard/DashboardCart";
 import DashboardCheckout from "@/components/dashboard/DashboardCheckout";
 import Footer from "@/components/Footer";
+import { toast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { clearCart } = useCart();
+  const location = useLocation();
+
+  // Check for payment completion when returning from payment gateway
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const paymentStatus = searchParams.get('payment_status');
+    const pendingOrderStr = sessionStorage.getItem('pendingOrder');
+    
+    if (paymentStatus && pendingOrderStr) {
+      try {
+        const pendingOrder = JSON.parse(pendingOrderStr);
+        
+        if (paymentStatus === 'success') {
+          // Success scenario
+          toast({
+            title: "Payment successful!",
+            description: "Your order has been processed successfully.",
+            variant: "default",
+          });
+          
+          // We'll handle the redirect to downloads with purchased items in state
+          window.history.replaceState({}, '', '/dashboard/downloads');
+          window.location.href = '/dashboard/downloads?checkout_complete=true';
+          
+          // Clear the cart and remove pending order
+          clearCart();
+        } else if (paymentStatus === 'failed') {
+          toast({
+            title: "Payment failed",
+            description: "There was an issue processing your payment. Please try again.",
+            variant: "destructive",
+          });
+        }
+        
+        // Clean up the session storage
+        sessionStorage.removeItem('pendingOrder');
+      } catch (error) {
+        console.error("Error processing payment return:", error);
+      }
+    }
+  }, [location, clearCart]);
 
   // If authentication is still loading, show loading indicator
   if (isLoading) {
